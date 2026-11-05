@@ -20,6 +20,7 @@
             packages = with pkgs; [
               gdb
               gnumake
+              gtest
               valgrind
               stable.readline
               stable.ncurses
@@ -38,10 +39,15 @@
               IndentWidth: 4
               UseTab: Never
               ReflowComments: false
+              DerivePointerAlignment: false
+              PointerAlignment: Left
+              ReferenceAlignment: Left
               EOF
 
               cat > compile_flags.txt <<'EOF'
               -Iinclude
+              -xc++
+              -std=c++17
               EOF
             '';
           };
