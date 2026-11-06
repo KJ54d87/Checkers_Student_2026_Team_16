@@ -1,0 +1,5 @@
+checkers_student_manual.pdf
+.envrc
+.clang-format
+.direnv/
+compile_flags.txt
