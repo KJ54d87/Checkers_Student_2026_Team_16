@@ -71,8 +71,6 @@ class MCTree {
     MCTSNode root;
 
     MCTree(const Board& position, int aiPlayer);
-
-    double rewardHeuristic(Board& board, int playerToMove) const;
 };
 
 #endif //STUDENTAI_H
