@@ -110,3 +110,43 @@ size_t MCTree::MCTSNode::unexpandedMoveCount() const {
 
 MCTree::MCTree(const Board& position, int aiPlayer)
     : player(aiPlayer), root(position, Move(), aiPlayer) {}
+
+double MCTree::rewardHeuristic(Board& board, int playerToMove) const {
+    if (board.tieCount >= board.tieMax) {
+        return DRAW_REWARD;
+    }
+
+    if (board.getAllPossibleMoves(playerToMove).empty()) {
+        return playerToMove == player ? LOSS_REWARD : WIN_REWARD;
+    }
+
+    int playerCount{player == BLACK_PLAYER ? board.blackCount
+                                                 : board.whiteCount};
+    int opponentCount{player == WHITE_PLAYER ? board.blackCount
+                                                   : board.whiteCount};
+
+    int blackKings{};
+    int whiteKings{};
+    for (const auto& row : board.board) {
+        for (const auto& piece : row) {
+            if (piece.isKing) {
+                if (piece.color == "B") {
+                    ++blackKings;
+                } else if (piece.color == "W") {
+                    ++whiteKings;
+                }
+            }
+        }
+    }
+
+    int playerKings{player == BLACK_PLAYER ? blackKings : whiteKings};
+    int opponentKings{player == WHITE_PLAYER ? blackKings : whiteKings};
+    playerCount -= playerKings;
+    opponentCount -= opponentKings;
+
+    double playerTotal{playerCount + KING_MULTIPLIER * playerKings};
+    double opponentTotal{opponentCount + KING_MULTIPLIER * opponentKings};
+
+    return 0.50 +
+           0.45 * (playerTotal - opponentTotal) / (playerTotal + opponentTotal);
+}

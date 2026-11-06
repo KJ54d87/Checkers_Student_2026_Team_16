@@ -8,6 +8,14 @@
 
 //The following part should be completed by students.
 //Students can modify anything except the class name and exisiting functions and varibles.
+constexpr double DRAW_REWARD{0.3};
+constexpr double KING_MULTIPLIER{3};
+constexpr double WIN_REWARD{1.0};
+constexpr double LOSS_REWARD{0.0};
+constexpr int BLACK_PLAYER{1};
+constexpr int WHITE_PLAYER{2};
+constexpr int DRAW{-1};
+
 class StudentAI : public AI {
   public:
     Board board;
@@ -63,6 +71,8 @@ class MCTree {
     MCTSNode root;
 
     MCTree(const Board& position, int aiPlayer);
+
+    double rewardHeuristic(Board& board, int playerToMove) const;
 };
 
 #endif //STUDENTAI_H
