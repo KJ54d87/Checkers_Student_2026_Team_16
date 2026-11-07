@@ -42,5 +42,17 @@ target_link_libraries(
 #target_link_libraries(src PRIVATE gtestmain)
 target_include_directories(MCTree_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
+add_executable(
+  AI_test
+  tests/AI_tests.cpp
+)
+target_link_libraries(
+  AI_test
+  src 
+  GTest::gtest_main
+)
+target_include_directories(AI_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
+
 include(GoogleTest)
 gtest_discover_tests(MCTree_test)
+gtest_discover_tests(AI_test)

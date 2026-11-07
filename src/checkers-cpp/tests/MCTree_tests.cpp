@@ -8,4 +8,6 @@ TEST(MCTSNodeTest, BasicConstruction) {
      MCTree::MCTSNode node = MCTree::MCTSNode(basic_board, empty_move, BLACK_PLAYER);
      
      EXPECT_EQ(basic_board.row, node.getBoard().row);
+     EXPECT_EQ(basic_board.col, node.getBoard().col);
+     EXPECT_EQ(basic_board.p, node.getBoard().p);
 }
