@@ -1,6 +1,0 @@
-build*
-CMakeFiles/*
-.*
-CTestTestfile.cmake
-Checker_Teacher
-libmain_gtests.a
