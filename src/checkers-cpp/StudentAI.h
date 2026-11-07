@@ -24,7 +24,6 @@ class StudentAI : public AI {
 };
 
 class MCTree {
-  public:
     class MCTSNode {
         Board board;
         Move move;
@@ -36,8 +35,9 @@ class MCTree {
         vector<Move> unexpandedMoves;
         int result; // 0: ongoing, -1: draw, 1/2: winning player.
 
+        int movingPlayer;
+
       public:
-        int moving_player;
         double w_i;
         unsigned int s_i;
 
@@ -52,11 +52,10 @@ class MCTree {
 
         MCTSNode* expandOne();
 
-        void generateChildren();
-
         bool isTerminal() const;
         bool isFullyExpanded() const;
         int getResult() const;
+        int getMovingPlayer() const;
         double averageReward() const;
         void recordReward(double reward);
 
@@ -67,10 +66,14 @@ class MCTree {
         size_t unexpandedMoveCount() const;
     };
 
-    int player;
+    double explorationRate;
     MCTSNode root;
+    int player;
+    // Select an existing child; the traversal handles terminal nodes and expansion.
+    MCTSNode& selectChild(MCTSNode& node, int s);
 
-    MCTree(const Board& position, int aiPlayer);
+  public:
+    MCTree(const Board& position, int aiPlayer, double explorationRate);
 };
 
 #endif //STUDENTAI_H

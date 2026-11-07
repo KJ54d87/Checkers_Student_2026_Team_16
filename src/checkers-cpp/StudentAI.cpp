@@ -1,4 +1,5 @@
 #include "StudentAI.h"
+#include <algorithm>
 #include <cmath>
 #include <random>
 #include <stdexcept>
@@ -30,9 +31,9 @@ Move StudentAI::GetMove(Move move) {
 MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
                            int playerToMove, MCTSNode* parentNode)
     : board(position), move(incomingMove), parent(parentNode), children(),
-      unexpandedMoves(), result(0), moving_player(playerToMove), w_i(0.0),
+      unexpandedMoves(), result(0), movingPlayer(playerToMove), w_i(0.0),
       s_i(0) {
-    if (moving_player != 1 && moving_player != 2) {
+    if (movingPlayer != 1 && movingPlayer != 2) {
         throw invalid_argument("MCTSNode player must be 1 or 2");
     }
 
@@ -42,13 +43,13 @@ MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
         return;
     }
 
-    const auto movesByChecker = board.getAllPossibleMoves(moving_player);
+    const auto movesByChecker = board.getAllPossibleMoves(movingPlayer);
     for (const auto& checkerMoves : movesByChecker) {
         unexpandedMoves.insert(unexpandedMoves.end(), checkerMoves.begin(),
                                checkerMoves.end());
     }
     if (unexpandedMoves.empty()) {
-        result = 3 - moving_player;
+        result = 3 - movingPlayer;
     }
 }
 
@@ -59,18 +60,13 @@ MCTree::MCTSNode* MCTree::MCTSNode::expandOne() {
 
     const Move nextMove = unexpandedMoves.back();
     Board nextBoard = board;
-    nextBoard.makeMove(nextMove, moving_player);
+    nextBoard.makeMove(nextMove, movingPlayer);
 
     unique_ptr<MCTSNode> child(
-        new MCTSNode(nextBoard, nextMove, 3 - moving_player, this));
+        new MCTSNode(nextBoard, nextMove, 3 - movingPlayer, this));
     children.push_back(std::move(child));
     unexpandedMoves.pop_back();
     return children.back().get();
-}
-
-void MCTree::MCTSNode::generateChildren() {
-    while (expandOne())
-        ;
 }
 
 bool MCTree::MCTSNode::isTerminal() const { return result != 0; }
@@ -80,6 +76,8 @@ bool MCTree::MCTSNode::isFullyExpanded() const {
 }
 
 int MCTree::MCTSNode::getResult() const { return result; }
+
+int MCTree::MCTSNode::getMovingPlayer() const { return movingPlayer; }
 
 double MCTree::MCTSNode::averageReward() const {
     return s_i == 0 ? 0.0 : w_i / s_i;
@@ -108,5 +106,37 @@ size_t MCTree::MCTSNode::unexpandedMoveCount() const {
     return unexpandedMoves.size();
 }
 
-MCTree::MCTree(const Board& position, int aiPlayer)
-    : player(aiPlayer), root(position, Move(), aiPlayer) {}
+MCTree::MCTree(const Board& position, int aiPlayer, double explorationRate)
+    : explorationRate(explorationRate), root(position, Move(), aiPlayer),
+      player(aiPlayer) {}
+
+MCTree::MCTSNode& MCTree::selectChild(MCTSNode& node, int s) {
+    const auto& children = node.getChildren();
+    if (children.empty()) {
+        throw std::logic_error(
+            "Cannot select a child from a childless node");
+    }
+
+    vector<std::pair<double, MCTSNode*>> scores;
+    scores.reserve(children.size());
+
+    for (const auto& child : children) {
+        if (child->s_i == 0) {
+            return *child;
+        }
+
+        const double score =
+            child->averageReward() +
+            explorationRate * std::sqrt(std::log1p(s) / child->s_i);
+        scores.emplace_back(score, child.get());
+    }
+
+    const auto best =
+        std::max_element(scores.begin(), scores.end(),
+                         [](const std::pair<double, MCTSNode*>& a,
+                            const std::pair<double, MCTSNode*>& b) {
+                             return a.first < b.first;
+                         });
+
+    return *best->second;
+}
