@@ -18,13 +18,11 @@ Move StudentAI::GetMove(Move move) {
     } else {
         board.makeMove(move, player == 1 ? 2 : 1);
     }
-    vector<vector<Move>> moves = board.getAllPossibleMoves(player);
-    int i = rand() % (moves.size());
-    vector<Move> checker_moves = moves[i];
-    int j = rand() % (checker_moves.size());
-    Move res = checker_moves[j];
-    board.makeMove(res, player);
-    return res;
+
+    MCTree tree(board, player, EXPLORATION_RATE);
+    Move aiMove{tree.search(SIMULATIONS)};
+    board.makeMove(aiMove, player);
+    return aiMove;
 }
 
 int MCTree::oppositePlayer(int player) {
@@ -191,4 +189,36 @@ void MCTree::backpropagate(MCTSNode& node, int result) {
         current->recordReward(reward);
         current = current->getParent();
     }
+}
+
+Move MCTree::search(int simulations) {
+    if (simulations <= 0)
+        throw invalid_argument(
+            "Simulations must be greater than or equal to zero.");
+
+    if (root.isTerminal())
+        throw std::logic_error("Cannot search a terminal position.");
+
+    for (int sim{}; sim < simulations; ++sim) {
+        MCTSNode* node = &root;
+
+        while (!node->isTerminal() && node->isFullyExpanded()) {
+            node = &selectChild(*node, node->s_i);
+        }
+
+        if (!node->isTerminal()) {
+            node = node->expandOne();
+        }
+
+        backpropagate(*node, rollout(*node));
+    }
+
+    const auto& children = root.getChildren();
+
+    const auto best = std::max_element(
+        children.begin(), children.end(),
+        [](const std::unique_ptr<MCTSNode>& a,
+           const std::unique_ptr<MCTSNode>& b) { return a->s_i < b->s_i; });
+
+    return (*best)->getMove();
 }

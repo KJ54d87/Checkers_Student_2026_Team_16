@@ -16,6 +16,8 @@ constexpr double LOSS_REWARD{0.0};
 constexpr int BLACK_PLAYER{1};
 constexpr int WHITE_PLAYER{2};
 constexpr int DRAW{-1};
+constexpr double EXPLORATION_RATE{1.4};
+constexpr int SIMULATIONS{1000};
 
 class StudentAI : public AI {
   public:
@@ -78,6 +80,7 @@ class MCTree {
 
   public:
     MCTree(const Board& position, int aiPlayer, double explorationRate);
+    Move search(int simulations);
 };
 
 #endif //STUDENTAI_H
