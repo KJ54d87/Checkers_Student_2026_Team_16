@@ -71,11 +71,10 @@ class MCTree {
     MCTSNode root;
     int player;
     std::mt19937 rng{std::random_device{}()};
-    // Select an existing child; the traversal handles terminal nodes and expansion.
     MCTSNode& selectChild(MCTSNode& node, int s);
-    // Return the winning player or DRAW; backpropagation assigns rewards.
     int rollout(const MCTSNode& node);
     static int oppositePlayer(int player);
+    void backpropagate(MCTSNode& node, int result);
 
   public:
     MCTree(const Board& position, int aiPlayer, double explorationRate);

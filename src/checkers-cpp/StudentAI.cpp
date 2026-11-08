@@ -173,3 +173,22 @@ int MCTree::rollout(const MCTSNode& node) {
         currentPlayer = oppositePlayer(currentPlayer);
     }
 }
+
+void MCTree::backpropagate(MCTSNode& node, int result) {
+    if (result != BLACK_PLAYER && result != WHITE_PLAYER && result != DRAW) {
+        throw invalid_argument("Result must be a valid player or DRAW");
+    }
+
+    MCTSNode* current = &node;
+    while (current != nullptr) {
+        const int rewardedPlayer =
+            current->getParent() == nullptr
+                ? player
+                : oppositePlayer(current->getMovingPlayer());
+        const double reward = result == DRAW             ? DRAW_REWARD
+                              : result == rewardedPlayer ? WIN_REWARD
+                                                         : LOSS_REWARD;
+        current->recordReward(reward);
+        current = current->getParent();
+    }
+}
