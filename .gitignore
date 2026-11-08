@@ -4,3 +4,19 @@ checkers_student_manual.pdf
 .direnv/
 compile_flags.txt
 __pycache__*
+
+# Generated build directories
+bin/
+build/
+cmake-build-*/
+
+# Legacy executable locations
+/src/checkers-cpp/main
+/src/checkers-cpp/Checker_Teacher
+
+# Local metadata and temporary editor files
+.DS_Store
+.~lock.*
+*.swp
+*.swo
+*~
