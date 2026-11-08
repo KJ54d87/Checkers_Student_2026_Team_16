@@ -48,7 +48,7 @@ MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
                                checkerMoves.end());
     }
     if (unexpandedMoves.empty()) {
-        result = 3 - moving_player;
+        result = 3 - moving_player; //Sorry what?
     }
 }
 

@@ -56,7 +56,7 @@ class MCTree {
 
         bool isTerminal() const;
         bool isFullyExpanded() const;
-        int getResult() const;
+        int getResult() const; //Plays a random game
         double averageReward() const;
         void recordReward(double reward);
 
