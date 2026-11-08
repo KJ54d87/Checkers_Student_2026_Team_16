@@ -12,7 +12,7 @@ const std::string randomAI("Sample_AIs/Random_AI/main.py");
 const std::string poorAI("Sample_AIs/Poor_AI/main.py"); 
 const std::string averageAI("Sample_AIs/Average_AI/main.py"); 
 const std::string goodAI("Sample_AIs/Good_AI/main.py"); 
-const std::string ourAI("../src/checkers-cpp/Checker_Teacher");
+const std::string ourAI("../src/checkers-cpp/build/Checker_Teacher");
 const int trials = 30;
 
 const double expectedWinrate = 0.6;
