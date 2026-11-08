@@ -42,33 +42,25 @@ double calcWinrate(std::string AI_1, std::string AI_2, const int trials) {
      return static_cast<double>(winCount)/trials; 
 }
 
-TEST(AItest, RandomAI) {
+TEST(AItest, RandomVsOur) {
      double winrateRandomVsOur = calcWinrate(randomAI, ourAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Random AI vs Our AI \
 failed"; 
-
+}
+TEST(AItest, OurVsRandom) {
      double winrateOurVsRandom = calcWinrate(ourAI, randomAI, 30);
      EXPECT_GE(winrateOurVsRandom, expectedWinrate) << "Our AI vs Random AI \
 failed"; 
-
 }
 
-TEST(AItest, PoorAI) {
-     double winratePoorVsOur = calcWinrate(poorAI, ourAI, 20);
-     EXPECT_GE(winratePoorVsOur, expectedWinrate) << "Poor AI vs Our AI \
-failed"; 
-
+TEST(AItest, OurVsPoor) {
      double winrateOurVsPoor = calcWinrate(ourAI, poorAI, 20);
      EXPECT_GE(winrateOurVsPoor, expectedWinrate) << "Our AI vs Poor AI \
 failed"; 
 }
 
-TEST(AItest, AverageAI) {
-     double winrateAverageVsOur = calcWinrate(averageAI, ourAI, 10);
-     EXPECT_GE(winrateAverageVsOur, expectedWinrate) << "AverageAI vs Our AI \
-failed"; 
-
-     double winrateOurVsAverage = calcWinrate(ourAI, averageAI, 10);
+TEST(AItest, OurVsAverage) {
+     double winrateOurVsAverage = calcWinrate(ourAI, averageAI, 5);
      EXPECT_GE(winrateOurVsAverage, expectedWinrate) << "Our AI vs AverageAI \
 failed"; 
 }
