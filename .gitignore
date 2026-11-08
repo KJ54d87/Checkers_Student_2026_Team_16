@@ -3,3 +3,4 @@ checkers_student_manual.pdf
 .clang-format
 .direnv/
 compile_flags.txt
+__pycache__*
