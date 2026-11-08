@@ -3,12 +3,13 @@
 #include "AI.h"
 #include "Board.h"
 #include <memory>
+#include <random>
 #include <vector>
 #pragma once
 
 //The following part should be completed by students.
 //Students can modify anything except the class name and exisiting functions and varibles.
-constexpr double DRAW_REWARD{0.3};
+constexpr double DRAW_REWARD{0.5};
 constexpr double KING_MULTIPLIER{3};
 constexpr double WIN_REWARD{1.0};
 constexpr double LOSS_REWARD{0.0};
@@ -69,8 +70,12 @@ class MCTree {
     double explorationRate;
     MCTSNode root;
     int player;
+    std::mt19937 rng{std::random_device{}()};
     // Select an existing child; the traversal handles terminal nodes and expansion.
     MCTSNode& selectChild(MCTSNode& node, int s);
+    // Return the winning player or DRAW; backpropagation assigns rewards.
+    int rollout(const MCTSNode& node);
+    static int oppositePlayer(int player);
 
   public:
     MCTree(const Board& position, int aiPlayer, double explorationRate);

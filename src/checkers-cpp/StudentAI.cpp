@@ -1,7 +1,6 @@
 #include "StudentAI.h"
 #include <algorithm>
 #include <cmath>
-#include <random>
 #include <stdexcept>
 #include <utility>
 
@@ -28,6 +27,12 @@ Move StudentAI::GetMove(Move move) {
     return res;
 }
 
+int MCTree::oppositePlayer(int player) {
+    if (!(player == 1 || player == 2))
+        throw invalid_argument("Player must be B (1) or W (2)");
+    return 3 - player;
+}
+
 MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
                            int playerToMove, MCTSNode* parentNode)
     : board(position), move(incomingMove), parent(parentNode), children(),
@@ -39,7 +44,7 @@ MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
 
     // Catch ties and return sentinel
     if (board.tieCount >= board.tieMax) {
-        result = -1;
+        result = DRAW;
         return;
     }
 
@@ -49,7 +54,7 @@ MCTree::MCTSNode::MCTSNode(const Board& position, const Move& incomingMove,
                                checkerMoves.end());
     }
     if (unexpandedMoves.empty()) {
-        result = 3 - movingPlayer;
+        result = oppositePlayer(movingPlayer);
     }
 }
 
@@ -63,7 +68,7 @@ MCTree::MCTSNode* MCTree::MCTSNode::expandOne() {
     nextBoard.makeMove(nextMove, movingPlayer);
 
     unique_ptr<MCTSNode> child(
-        new MCTSNode(nextBoard, nextMove, 3 - movingPlayer, this));
+        new MCTSNode(nextBoard, nextMove, oppositePlayer(movingPlayer), this));
     children.push_back(std::move(child));
     unexpandedMoves.pop_back();
     return children.back().get();
@@ -113,8 +118,7 @@ MCTree::MCTree(const Board& position, int aiPlayer, double explorationRate)
 MCTree::MCTSNode& MCTree::selectChild(MCTSNode& node, int s) {
     const auto& children = node.getChildren();
     if (children.empty()) {
-        throw std::logic_error(
-            "Cannot select a child from a childless node");
+        throw std::logic_error("Cannot select a child from a childless node");
     }
 
     vector<std::pair<double, MCTSNode*>> scores;
@@ -139,4 +143,33 @@ MCTree::MCTSNode& MCTree::selectChild(MCTSNode& node, int s) {
                          });
 
     return *best->second;
+}
+
+int MCTree::rollout(const MCTSNode& node) {
+    if (node.isTerminal()) {
+        return node.getResult();
+    }
+
+    Board simBoard{node.getBoard()};
+    int currentPlayer{node.getMovingPlayer()};
+
+    while (true) {
+        if (simBoard.tieCount >= simBoard.tieMax)
+            return DRAW;
+
+        vector<Move> moves{};
+        for (const auto& group : simBoard.getAllPossibleMoves(currentPlayer)) {
+            moves.insert(moves.end(), group.begin(), group.end());
+        }
+
+        if (moves.empty()) {
+            return oppositePlayer(currentPlayer);
+        }
+
+        // Pick uniformly across all legal moves.
+        std::uniform_int_distribution<size_t> pick(0, moves.size() - 1);
+        const Move& move = moves[pick(rng)];
+        simBoard.makeMove(move, currentPlayer);
+        currentPlayer = oppositePlayer(currentPlayer);
+    }
 }
