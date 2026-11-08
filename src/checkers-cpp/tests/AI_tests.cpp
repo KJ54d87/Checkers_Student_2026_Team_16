@@ -30,7 +30,7 @@ std::string buildCommand(std::string AI_1, std::string AI_2){
 double calcWinrate(std::string AI_1, std::string AI_2, const int trials) {
      int winCount = 0;
      for (int i = 0; i < trials; i++){
-          std::system(buildCommand(AI_1, AI_2));
+          std::system(buildCommand(AI_1, AI_2).c_str());
           std::ifstream log("/tmp/log");
           std::string result; 
           if (log.is_open()){
@@ -43,32 +43,32 @@ double calcWinrate(std::string AI_1, std::string AI_2, const int trials) {
 }
 
 TEST(AItest, RandomAI) {
-     double winrateRandomVsOur = calcWinrate(randomAI, ourAI);
+     double winrateRandomVsOur = calcWinrate(randomAI, ourAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Random AI vs Our AI \
 failed"; 
 
-     double winrateOurVsRandom = calcWinrate(ourAI, randomAI);
+     double winrateOurVsRandom = calcWinrate(ourAI, randomAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs Random AI \
 failed"; 
 
 }
 
 TEST(AItest, PoorAI) {
-     double winrateRandomVsOur = calcWinrate(poorAI, ourAI);
+     double winrateRandomVsOur = calcWinrate(poorAI, ourAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Poor AI vs Our AI \
 failed"; 
 
-     double winrateOurVsRandom = calcWinrate(ourAI, poorAI);
+     double winrateOurVsRandom = calcWinrate(ourAI, poorAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs Poor AI \
 failed"; 
 }
 
 TEST(AItest, AverageAI) {
-     double winrateRandomVsOur = calcWinrate(averageAI, ourAI);
+     double winrateRandomVsOur = calcWinrate(averageAI, ourAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "AverageAI vs Our AI \
 failed"; 
 
-     double winrateOurVsRandom = calcWinrate(ourAI, averageAI);
+     double winrateOurVsRandom = calcWinrate(ourAI, averageAI, 30);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs AverageAI \
 failed"; 
 }
