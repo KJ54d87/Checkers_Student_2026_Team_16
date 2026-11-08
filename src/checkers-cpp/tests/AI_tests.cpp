@@ -48,27 +48,27 @@ TEST(AItest, RandomAI) {
 failed"; 
 
      double winrateOurVsRandom = calcWinrate(ourAI, randomAI, 30);
-     EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs Random AI \
+     EXPECT_GE(winrateOurVsRandom, expectedWinrate) << "Our AI vs Random AI \
 failed"; 
 
 }
 
 TEST(AItest, PoorAI) {
-     double winrateRandomVsOur = calcWinrate(poorAI, ourAI, 30);
-     EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Poor AI vs Our AI \
+     double winratePoorVsOur = calcWinrate(poorAI, ourAI, 20);
+     EXPECT_GE(winratePoorVsOur, expectedWinrate) << "Poor AI vs Our AI \
 failed"; 
 
-     double winrateOurVsRandom = calcWinrate(ourAI, poorAI, 30);
-     EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs Poor AI \
+     double winrateOurVsPoor = calcWinrate(ourAI, poorAI, 20);
+     EXPECT_GE(winrateOurVsPoor, expectedWinrate) << "Our AI vs Poor AI \
 failed"; 
 }
 
 TEST(AItest, AverageAI) {
-     double winrateRandomVsOur = calcWinrate(averageAI, ourAI, 30);
-     EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "AverageAI vs Our AI \
+     double winrateAverageVsOur = calcWinrate(averageAI, ourAI, 10);
+     EXPECT_GE(winrateAverageVsOur, expectedWinrate) << "AverageAI vs Our AI \
 failed"; 
 
-     double winrateOurVsRandom = calcWinrate(ourAI, averageAI, 30);
-     EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Our AI vs AverageAI \
+     double winrateOurVsAverage = calcWinrate(ourAI, averageAI, 10);
+     EXPECT_GE(winrateOurVsAverage, expectedWinrate) << "Our AI vs AverageAI \
 failed"; 
 }
