@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(SOURCE_FILES ../src/checkers-cpp/main.cpp ../src/checkers-cpp/GameLogic.cpp ../src/checkers-cpp/Move.cpp ../src/checkers-cpp/ManualAI.cpp ../src/checkers-cpp/StudentAI.cpp ../src/checkers-cpp/Move.cpp ../src/checkers-cpp/Move.h ../src/checkers-cpp/AI.h ../src/checkers-cpp/Board.cpp ../src/checkers-cpp/Board.cpp ../src/checkers-cpp/Board.h ../src/checkers-cpp/Utils.cpp ../src/checkers-cpp/Utils.h ../src/checkers-cpp/Checker.h ../src/checkers-cpp/Checker.cpp)
 # Yes, doing a reletive path is very fragile and will break if we move any 
 # files. However, due to the assignment, we are constrained to not move any
-# files and to not edit the CMake in the source 
+# files. 
 
 add_executable(OurAI ${SOURCE_FILES})
 
