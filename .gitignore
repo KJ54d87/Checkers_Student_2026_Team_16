@@ -1,6 +1,6 @@
 .direnv/
 compile_flags.txt
-__pycache__*
+__pycache__
 
 # Generated build directories
 bin/
@@ -17,3 +17,5 @@ cmake-build-*/
 *.swp
 *.swo
 *~
+*.zip
+perf.data
