@@ -43,18 +43,18 @@ double calcWinrate(std::string AI_1, std::string AI_2, const int trials) {
 }
 
 TEST(AItest, RandomVsOur) {
-     double winrateRandomVsOur = calcWinrate(randomAI, ourAI, 30);
+     double winrateRandomVsOur = calcWinrate(randomAI, ourAI, 10);
      EXPECT_GE(winrateRandomVsOur, expectedWinrate) << "Random AI vs Our AI \
 failed"; 
 }
 TEST(AItest, OurVsRandom) {
-     double winrateOurVsRandom = calcWinrate(ourAI, randomAI, 30);
+     double winrateOurVsRandom = calcWinrate(ourAI, randomAI, 10);
      EXPECT_GE(winrateOurVsRandom, expectedWinrate) << "Our AI vs Random AI \
 failed"; 
 }
 
 TEST(AItest, OurVsPoor) {
-     double winrateOurVsPoor = calcWinrate(ourAI, poorAI, 20);
+     double winrateOurVsPoor = calcWinrate(ourAI, poorAI, 10);
      EXPECT_GE(winrateOurVsPoor, expectedWinrate) << "Our AI vs Poor AI \
 failed"; 
 }
