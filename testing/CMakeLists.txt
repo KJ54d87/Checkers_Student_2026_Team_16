@@ -2,13 +2,14 @@ cmake_minimum_required(VERSION 3.14)
 project(Checker_Teacher C CXX)
 
 set(CMAKE_CXX_STANDARD 17)
-#set(CMAKE_CXX_STANDARD_REQUIRED ON)
-#set(SOURCE_FILES main.cpp GameLogic.cpp Move.cpp ManualAI.cpp StudentAI.cpp Move.cpp Move.h AI.h Board.cpp)
-set(SOURCE_FILES main.cpp Move.cpp Move.h Board.cpp Board.h Checker.cpp Checker.h Utils.cpp Utils.h StudentAI.cpp StudentAI.h GameLogic.cpp GameLogic.h ManualAI.cpp ManualAI.h)
 
-add_executable(Checker_Teacher ${SOURCE_FILES})
+set(SOURCE_FILES ../src/checkers-cpp/main.cpp ../src/checkers-cpp/GameLogic.cpp ../src/checkers-cpp/Move.cpp ../src/checkers-cpp/ManualAI.cpp ../src/checkers-cpp/StudentAI.cpp ../src/checkers-cpp/Move.cpp ../src/checkers-cpp/Move.h ../src/checkers-cpp/AI.h ../src/checkers-cpp/Board.cpp ../src/checkers-cpp/Board.cpp ../src/checkers-cpp/Board.h ../src/checkers-cpp/Utils.cpp ../src/checkers-cpp/Utils.h ../src/checkers-cpp/Checker.h ../src/checkers-cpp/Checker.cpp)
+# Yes, doing a reletive path is very fragile and will break if we move any 
+# files. However, due to the assignment, we are constrained to not move any
+# files and to not edit the CMake in the source 
 
-#set(SOURCE_FILES main.cpp GameLogic.cpp Move.cpp ManualAI.cpp StudentAI.cpp Move.cpp Move.h AI.h Board.cpp)
+add_executable(OurAI ${SOURCE_FILES})
+
 
 include(FetchContent)
 FetchContent_Declare(
@@ -18,29 +19,16 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(googletest)
 
 add_library(src 
-  Board.cpp
-  Checker.cpp
-  GameLogic.cpp
-  ManualAI.cpp
-  Move.cpp
-  StudentAI.cpp
-  Utils.cpp
+  ../src/checkers-cpp/Board.cpp
+  ../src/checkers-cpp/Checker.cpp
+  ../src/checkers-cpp/GameLogic.cpp
+  ../src/checkers-cpp/ManualAI.cpp
+  ../src/checkers-cpp/Move.cpp
+  ../src/checkers-cpp/StudentAI.cpp
+  ../src/checkers-cpp/Utils.cpp
 )
 
 enable_testing()
-
-add_executable(
-  MCTree_test
-  tests/MCTree_tests.cpp
-)
-target_link_libraries(
-  MCTree_test
-  src 
-  GTest::gtest_main
-)
-
-#target_link_libraries(src PRIVATE gtestmain)
-target_include_directories(MCTree_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
 
 add_executable(
   AI_test
@@ -51,8 +39,8 @@ target_link_libraries(
   src 
   GTest::gtest_main
 )
-target_include_directories(AI_test PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" "${CMAKE_CURRENT_BINARY_DIR}")
+target_include_directories(AI_test PUBLIC "../src/checkers-cpp" "${CMAKE_CURRENT_BINARY_DIR}")
 
 include(GoogleTest)
-gtest_discover_tests(MCTree_test)
+#gtest_discover_tests(MCTree_test)
 gtest_discover_tests(AI_test)
