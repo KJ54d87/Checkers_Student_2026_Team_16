@@ -3,18 +3,21 @@
 #include "AI.h"
 #include "Board.h"
 #include <memory>
+#include <random>
 #include <vector>
 #pragma once
 
 //The following part should be completed by students.
 //Students can modify anything except the class name and exisiting functions and varibles.
-constexpr double DRAW_REWARD{0.3};
+constexpr double DRAW_REWARD{0.5};
 constexpr double KING_MULTIPLIER{3};
 constexpr double WIN_REWARD{1.0};
 constexpr double LOSS_REWARD{0.0};
 constexpr int BLACK_PLAYER{1};
 constexpr int WHITE_PLAYER{2};
 constexpr int DRAW{-1};
+constexpr double EXPLORATION_RATE{1.4};
+constexpr int SIMULATIONS{1000};
 
 class StudentAI : public AI {
   public:
@@ -24,7 +27,6 @@ class StudentAI : public AI {
 };
 
 class MCTree {
-  public:
     class MCTSNode {
         Board board;
         Move move;
@@ -36,8 +38,9 @@ class MCTree {
         vector<Move> unexpandedMoves;
         int result; // 0: ongoing, -1: draw, 1/2: winning player.
 
+        int movingPlayer;
+
       public:
-        int moving_player;
         double w_i;
         unsigned int s_i;
 
@@ -52,11 +55,10 @@ class MCTree {
 
         MCTSNode* expandOne();
 
-        void generateChildren();
-
         bool isTerminal() const;
         bool isFullyExpanded() const;
         int getResult() const;
+        int getMovingPlayer() const;
         double averageReward() const;
         void recordReward(double reward);
 
@@ -67,10 +69,18 @@ class MCTree {
         size_t unexpandedMoveCount() const;
     };
 
-    int player;
+    double explorationRate;
     MCTSNode root;
+    int player;
+    std::mt19937 rng{std::random_device{}()};
+    MCTSNode& selectChild(MCTSNode& node, int s);
+    int rollout(const MCTSNode& node);
+    static int oppositePlayer(int player);
+    void backpropagate(MCTSNode& node, int result);
 
-    MCTree(const Board& position, int aiPlayer);
+  public:
+    MCTree(const Board& position, int aiPlayer, double explorationRate);
+    Move search(int simulations);
 };
 
 #endif //STUDENTAI_H
