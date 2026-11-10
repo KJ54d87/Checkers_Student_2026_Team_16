@@ -2,9 +2,10 @@
 #include <fstream> 
 #include <string> 
 #include <thread>
+#include <future>
 #include <iostream>
 #include <stdexcept>
-#include <format>
+#include <chrono>
 #include "Board.h"
 #include "StudentAI.h"
 #include <gtest/gtest.h>
@@ -18,7 +19,8 @@ const std::string averageAI("Sample_AIs/Average_AI/main.py");
 const std::string goodAI("Sample_AIs/Good_AI/main.py"); 
 const std::string ourAI("../testing/build/OurAI");
 const int trials = 30;
-const int cores = std::thread::hardware_concurrency();
+//const int cores = std::thread::hardware_concurrency();
+const int cores = 2;
 
 const double expectedWinrate = 0.6;
 
@@ -46,16 +48,44 @@ bool simulate_game(std::string AI_1, std::string AI_2, int expected_winner=1){
 }
 
 double calcWinrate(std::string AI_1, std::string AI_2, const int trials, int expected_winner=1) {
-     if (expected_winner != 1 && expected_winner != 2) throw range_error("Called with an expected winner that is not 1 or 2");
-     if (cores == 0 || true){
-          int winCount = 0;
+    if (expected_winner != 1 && expected_winner != 2) throw range_error("Called with an expected winner that is not 1 or 2");
+    if (cores == 0){
+        int winCount = 0;
           for (int i = 0; i < trials; i++){
                if (simulate_game(AI_1, AI_2, expected_winner)) winCount++;
           } 
           return static_cast<double>(winCount)/trials; 
-     } else {
-          //TODO: Prototype 2 threads.  
-     }
+    } else {
+        int winCount = 0;
+        std::packaged_task<bool(std::string,std::string,int)>task(&simulate_game);
+        std::packaged_task<bool(std::string,std::string,int)>task2(&simulate_game);
+            auto result = task.get_future();
+        auto result2 = task2.get_future();
+        std::thread t(std::move(task), AI_1, AI_2, 1);
+        std::thread t2(std::move(task2), AI_1, AI_2, 1);
+        t.join();
+        t2.join();
+        if (result.get()) winCount++;
+        if (result2.get()) winCount++;
+        return static_cast<double>(winCount)/trials; 
+    }
+}
+
+TEST(AIBenchmark, ThreadedIsFasterThanSerial) {
+    const auto startSerial = std::chrono::steady_clock::now();
+    double winrateRandomVsOur = calcWinrate(randomAI, ourAI, 1, 2);
+    winrateRandomVsOur = calcWinrate(randomAI, ourAI, 1, 2);
+    const auto endSerial = std::chrono::steady_clock::now();
+
+    const auto startConcurrent = std::chrono::steady_clock::now();
+    winrateRandomVsOur = calcWinrate(randomAI, ourAI, 2, 2);
+    const auto endConcurrent = std::chrono::steady_clock::now();
+    
+    auto serialTime = endSerial - startSerial;
+    auto concurrentTime = endConcurrent - startConcurrent;
+       
+    EXPECT_LE(concurrentTime.count(), serialTime.count());
+    std::cout<<std::endl<<static_cast<double>(serialTime.count())/concurrentTime.count()<<" speedup"<<std::endl;
 }
 
 TEST(AItest, RandomVsOur) {
