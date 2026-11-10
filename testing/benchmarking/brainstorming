@@ -1,0 +1,21 @@
+Brainstorming!
+winrate(AI_1, AI_2)
+create_AI(config)
+config(...)
+Current configuration parameters would be exploration rate, simulation rate & branch factor.
+
+So then the benchmarking program would simply be
+winrate(best_AI, our_AI)
+
+Tuning would be more interesting
+Were probably going to go for a simple random search at first
+But then I can program an evolutionary model. 
+Random population, play them against each other, take top n%
+
+Mutate and combine top n%, play these new ones against each other
+and the old top n%
+
+We can detect cycling by graphing since we only have three params? 
+IDK, if results stagnate, identify why and implement anti cylce/
+disengagement as needed
+
