@@ -28,6 +28,10 @@ add_library(src
   ../src/checkers-cpp/Utils.cpp
 )
 
+add_library(benchmarking
+  ../benchmarking/ThreadPool.cpp
+)
+
 enable_testing()
 
 add_executable(
@@ -41,6 +45,18 @@ target_link_libraries(
 )
 target_include_directories(AI_test PUBLIC "../src/checkers-cpp" "${CMAKE_CURRENT_BINARY_DIR}")
 
+add_executable(
+  ThreadPool_test
+  tests/ThreadPoolTests.cpp
+)
+target_link_libraries(
+  ThreadPool_test
+  benchmarking
+  GTest::gtest_main
+)
+target_include_directories(ThreadPool_test PUBLIC "../benchmarking" "${CMAKE_CURRENT_BINARY_DIR}")
+
 include(GoogleTest)
 #gtest_discover_tests(MCTree_test)
 gtest_discover_tests(AI_test)
+gtest_discover_tests(ThreadPool_test)

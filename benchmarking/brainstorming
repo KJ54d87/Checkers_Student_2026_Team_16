@@ -1,7 +1,11 @@
 Brainstorming!
+So we have a list of configs (AI_1, AI_2, ... AI_N)
+We can do a tournament selector, fitness prop, Stochastic universal
 winrate(AI_1, AI_2)
-create_AI(config)
-config(...)
+create_AI(config) //Some sort of text parser that can copy the source code,
+edit the correct variables, and then compile
+config(...) // Just a class that holds configs
+
 Current configuration parameters would be exploration rate, simulation rate & branch factor.
 
 So then the benchmarking program would simply be
@@ -18,4 +22,3 @@ and the old top n%
 We can detect cycling by graphing since we only have three params? 
 IDK, if results stagnate, identify why and implement anti cylce/
 disengagement as needed
-
