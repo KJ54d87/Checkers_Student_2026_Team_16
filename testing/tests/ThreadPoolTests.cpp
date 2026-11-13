@@ -23,15 +23,16 @@ TEST(ThreadPooltest, one_task) {
 
 TEST(ThreadPooltest, multiple_tasks) {
     ThreadPool pool{};
+    const int tasks = 10;
     int num = 0;
-    std::mutex finished_mutex;
-    finished_mutex.lock();
+    std::mutex finished_mutex[tasks];
+    
+    for (int i = 0; i < tasks; i++){
+        finished_mutex[i].lock();
+        pool.enqueue([&num, &finished_mutex, i](){++num; finished_mutex[i].unlock();});
+    }
 
-    pool.enqueue([&num](){num++;});
-    pool.enqueue([&num](){num++;});
-    pool.enqueue([&num](){num++;});
-    pool.enqueue([&num, &finished_mutex](){++num; finished_mutex.unlock();});
-    finished_mutex.lock();
+    for (int i = 0; i < tasks; i++) finished_mutex[i].lock();
 
-    EXPECT_EQ(num, 4);
+    EXPECT_EQ(num, tasks);
 }
