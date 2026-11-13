@@ -10,7 +10,6 @@ ThreadPool::ThreadPool(int num_threads){
                 queue_mutex.lock();
                 std::function<void()> func;
                 if (!tasks.empty()){
-                    std::cout<<"no way this activates\n";
                     func = tasks.front();
                     tasks.pop();
                 } else {
@@ -25,22 +24,20 @@ ThreadPool::ThreadPool(int num_threads){
         }));
     }
 }
-        //lock mutex
-                    //Check if we can pop
-                    // If no, check if stop is set
-                    // If so, then return
-                    // Otherwise, loop back up
-                    // If we can pop, pop and run function.
 
 ThreadPool::~ThreadPool(){
-    queue_mutex.lock();
     stop = true;
-    queue_mutex.unlock();
     for (int i = 0; i < threads.size(); i++){
         threads[i].join();
     }
 }
-void ThreadPool::enqueue(std::function<void()>){}
+void ThreadPool::enqueue(std::function<void()> func){
+    queue_mutex.lock();
+    tasks.push(func);
+    queue_mutex.unlock();
+    
+}
+
 bool ThreadPool::empty(){
     return tasks.empty();
 }
