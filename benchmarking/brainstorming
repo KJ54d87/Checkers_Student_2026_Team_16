@@ -4,7 +4,6 @@ We can do a tournament selector, fitness prop, Stochastic universal
 winrate(AI_1, AI_2)
 create_AI(config) //Some sort of text parser that can copy the source code,
 edit the correct variables, and then compile
-config(...) // Just a class that holds configs
 
 Current configuration parameters would be exploration rate, simulation rate & branch factor.
 
@@ -22,3 +21,34 @@ and the old top n%
 We can detect cycling by graphing since we only have three params? 
 IDK, if results stagnate, identify why and implement anti cylce/
 disengagement as needed
+
+Winrate -> done
+create_AI(config) will copy source to tmp. Sed some value
+config() -> is just going to be a dictionary of the form
+{Variable_name: value}
+
+Ok, how create_AI is going to work, is that theres going to need three inputs
+location(dir), name(string) and config(file). 
+
+So it will copy ../src/main to /tmp/,  parse your config file, 
+sed -i to conduct your configs, and then compile w/ make. Then, it will copy 
+that main file into the location you prescribe, as well as the config file 
+that created that AI and the student_AI.cpp.
+
+Basically, there should be enough information to recompile whatever AI you've
+created before
+
+This makes file organization kinda interesting
+Were going to have
+AI_drafts
+-AI_1
+--main.cpp
+--config
+--StudentAI.cpp
+
+-AI_2
+--main.cpp
+--config
+--StudentAI.cpp
+
+Then the ranker would keep a vector of directories? Yeah.
