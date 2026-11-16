@@ -3,6 +3,8 @@
 #include <iostream>
 #include <filesystem>
 
+namespace fs=std::filesystem;
+
 //sed -i 's/DRAW_REWARD.*/DRAW_REAWD{0.7};/' StudentAI.h 
 const std::string replaceStart("sed -i ");
 const std::string commandStart("cd ../Tools/ && python3 AI_Runner.py 8 8 3 \
@@ -34,8 +36,9 @@ void copy_files(std::filesystem::path from, std::filesystem::path to){
 std::filesystem::path create_AI(std::filesystem::directory_entry location, 
      std::string name, std::filesystem::path config) {
      //copy to temp
-     copy(source_directory, temp);
+     fs::copy(source_directory, location, fs::copy_options::recursive);
      //sed
      //make
      //move to 
+     return source_directory;
 }

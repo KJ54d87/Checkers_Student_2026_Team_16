@@ -1,4 +1,5 @@
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 #include <string>
 #include "CreateAI.h"
@@ -6,6 +7,9 @@
 
 std::filesystem::directory_entry DEFAULT_TEST_DIR 
      {std::filesystem::path ("/tmp/Group16Compsci161TestDir")};
+
+std::filesystem::directory_entry SRC_DIR 
+     {std::filesystem::path ("../src/checkers-cpp")};
 
 std::filesystem::directory_entry create_uncontested_tmp_dir(){
      std::filesystem::directory_entry new_tmp_dir{DEFAULT_TEST_DIR}; 
@@ -21,20 +25,14 @@ std::filesystem::directory_entry create_uncontested_tmp_dir(){
      return new_tmp_dir;
 }
 
-TEST(CreateAITest, copy_files_move_one_file_to_tmp) {
-     // Create a test_dir in tmp
-     // Create a file in test_dir
-     // Create a copy_to_dir in test_dir
-     // Copy file from test_dir to copy_to_dir
-     // Check if file is in copy_to_dir
-     // Delete test_dir, otherwise we break future tets cases
-     create_uncontested_tmp_dir();
-     
-}
+TEST(CreateAITest, create_AI_copies_src) {
+     auto work_dir = create_uncontested_tmp_dir();
+     fs::path mock_config_file_path = work_dir.path() / "tmp";
+     std::ofstream mock_config_file{mock_config_file_path};
 
-TEST(CreateAITest, copy_files_move_one_dir_to_tmp) {
-     // Create a directory + 2 files
-     // Move to tmp
-     // Check if directory + files are in tmp
+     create_AI(work_dir, "create_AI_copies_src", mock_config_file_path);
      
+     for (auto file : fs::directory_iterator(SRC_DIR)){
+          EXPECT_TRUE(fs::exists((work_dir/ fs::path(file).filename())));
+     }
 }
