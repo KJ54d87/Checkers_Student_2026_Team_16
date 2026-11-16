@@ -8,8 +8,17 @@ std::filesystem::directory_entry DEFAULT_TEST_DIR
      {std::filesystem::path ("/tmp/Group16Compsci161TestDir")};
 
 std::filesystem::directory_entry create_uncontested_tmp_dir(){
-     std::filesystem::create_directory(DEFAULT_TEST_DIR);
-     return DEFAULT_TEST_DIR;
+     std::filesystem::directory_entry new_tmp_dir{DEFAULT_TEST_DIR}; 
+     int filler = 1;
+
+     while (!std::filesystem::create_directory(new_tmp_dir)){
+          //Cursed one liner to generate alternative directories
+          new_tmp_dir.replace_filename(
+               std::filesystem::path{
+                    DEFAULT_TEST_DIR.path().string() + std::to_string(filler++)
+               });
+     }
+     return new_tmp_dir;
 }
 
 TEST(CreateAITest, copy_files_move_one_file_to_tmp) {
