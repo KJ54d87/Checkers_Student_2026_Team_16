@@ -30,6 +30,7 @@ add_library(src
 
 add_library(benchmarking
   ../benchmarking/ThreadPool.cpp
+  ../benchmarking/CreateAI.cpp
 )
 
 enable_testing()
@@ -56,7 +57,19 @@ target_link_libraries(
 )
 target_include_directories(ThreadPool_test PUBLIC "../benchmarking" "${CMAKE_CURRENT_BINARY_DIR}")
 
+add_executable(
+  CreateAI_test
+  tests/CreateAITests.cpp
+)
+target_link_libraries(
+  CreateAI_test
+  benchmarking
+  GTest::gtest_main
+)
+target_include_directories(CreateAI_test PUBLIC "../benchmarking" "${CMAKE_CURRENT_BINARY_DIR}")
+
 include(GoogleTest)
 #gtest_discover_tests(MCTree_test)
 gtest_discover_tests(AI_test)
 gtest_discover_tests(ThreadPool_test)
+gtest_discover_tests(CreateAI_test)

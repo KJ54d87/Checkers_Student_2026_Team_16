@@ -35,6 +35,9 @@ sed -i to conduct your configs, and then compile w/ make. Then, it will copy
 that main file into the location you prescribe, as well as the config file 
 that created that AI and the student_AI.cpp.
 
+Thing is, location is going to be a command line argument, so that this will
+work over different computers.
+
 Basically, there should be enough information to recompile whatever AI you've
 created before
 
