@@ -1,7 +1,9 @@
 #include <cstdlib> 
 #include <string> 
 #include <iostream>
+#include <fstream>
 #include <filesystem>
+#include <map>
 
 namespace fs=std::filesystem;
 
@@ -15,7 +17,7 @@ const std::filesystem::directory_entry source_directory{std::filesystem::path(
      "../src/checkers-cpp")};
 const std::filesystem::directory_entry temp{"/tmp"};
 
-bool simulate_game(std::string AI_1, std::string AI_2, int expected_winner=1){
+bool simulate_game(std::string AI_1, std::string AI_2){
      //std::system();
      //std::ifstream log("/tmp/log");
      //std::string result; 
@@ -28,16 +30,24 @@ bool simulate_game(std::string AI_1, std::string AI_2, int expected_winner=1){
      //return false;
 }
 
-void copy_files(std::filesystem::path from, std::filesystem::path to){
-     //std::system("cp -r " + std::filesystem::absolute(from) + " " + \
-     //std::filesystem::absolute(to));
-}
-
 std::filesystem::path create_AI(std::filesystem::directory_entry location, 
      std::string name, std::filesystem::path config) {
      //copy to temp
      fs::copy(source_directory, location, fs::copy_options::recursive);
      //sed
+     std::ifstream config_file{config};
+     std::string variable;
+     float value;
+
+//sed -i 's/DRAW_REWARD.*/DRAW_REAWD{0.7};/' StudentAI.h 
+     while (config_file >> variable >> value){
+          std::system(
+               (replaceStart + " 's/" 
+               + variable + ".*/"
+               + variable + "{" + std::to_string(value) + "};/' "
+               + fs::canonical(fs::path(location) / "StudentAI.h").string())
+               .c_str());
+     }
      //make
      //move to 
      return source_directory;

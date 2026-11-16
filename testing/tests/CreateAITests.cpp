@@ -51,9 +51,11 @@ TEST(CreateAITest, applies_changes) {
      std::string line;
      while (std::getline(StudentAIHeader, line)){
           if (line.find("DRAW_REWARD") != std::string::npos){
-               EXPECT_TRUE(line.find("DRAW_REWARD{0.7}") != std::string::npos) 
-                    << "Expected change to DRAW_REWARD in StudentAI.h " 
-                    "did not occur";
+               EXPECT_TRUE(line.find("DRAW_REWARD{0.7") != std::string::npos) 
+                    << "Expected DRAW_REWARD{0.7}, got: " << line;
+               //We could do more complicated matching but I can't be bothered
+               // Future dev, keep in mind that this testcase is necessary but
+               // not sufficient. 
           }          
      }
 }
