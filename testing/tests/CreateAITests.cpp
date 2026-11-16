@@ -36,3 +36,24 @@ TEST(CreateAITest, create_AI_copies_src) {
           EXPECT_TRUE(fs::exists((work_dir/ fs::path(file).filename())));
      }
 }
+
+TEST(CreateAITest, applies_changes) {
+     auto work_dir = create_uncontested_tmp_dir();
+     fs::path mock_config_file_path = work_dir.path() / "config.txt";
+     std::ofstream mock_config_file{mock_config_file_path};
+     mock_config_file << "DRAW_REWARD 0.7\n";
+     mock_config_file.close();
+
+     create_AI(work_dir, "create_AI_copies_src", mock_config_file_path);
+     
+     std::ifstream StudentAIHeader{work_dir.path() / "StudentAI.h"};
+
+     std::string line;
+     while (std::getline(StudentAIHeader, line)){
+          if (line.find("DRAW_REWARD") != std::string::npos){
+               EXPECT_TRUE(line.find("DRAW_REWARD{0.7}") != std::string::npos) 
+                    << "Expected change to DRAW_REWARD in StudentAI.h " 
+                    "did not occur";
+          }          
+     }
+}
