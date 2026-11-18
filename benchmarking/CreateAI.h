@@ -16,5 +16,5 @@ const std::filesystem::directory_entry temp{"/tmp"};
 
 bool simulate_game(fs::path AI_1, fs::path AI_2);
 
-fs::path create_AI(std::filesystem::directory_entry location, 
+void create_AI(std::filesystem::directory_entry location, 
      std::string name, std::filesystem::path config);

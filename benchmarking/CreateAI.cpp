@@ -17,7 +17,7 @@ const std::filesystem::directory_entry source_directory{std::filesystem::path(
      "../src/checkers-cpp")};
 const std::filesystem::directory_entry temp{"/tmp"};
 
-bool simulate_game(std::string AI_1, std::string AI_2){
+bool simulate_game(fs::path AI_1, fs::path AI_2){
      //std::system();
      //std::ifstream log("/tmp/log");
      //std::string result; 
@@ -30,7 +30,7 @@ bool simulate_game(std::string AI_1, std::string AI_2){
      //return false;
 }
 
-std::filesystem::path create_AI(std::filesystem::directory_entry location, 
+void create_AI(std::filesystem::directory_entry location, 
      std::string name, std::filesystem::path config) {
      //copy to temp
      fs::copy(source_directory, location, fs::copy_options::recursive);
@@ -39,7 +39,7 @@ std::filesystem::path create_AI(std::filesystem::directory_entry location,
      std::string variable;
      float value;
 
-//sed -i 's/DRAW_REWARD.*/DRAW_REAWD{0.7};/' StudentAI.h 
+     //sed -i 's/DRAW_REWARD.*/DRAW_REWARD{0.7};/' StudentAI.h 
      while (config_file >> variable >> value){
           std::system(
                (replaceStart + " 's/" 
@@ -49,6 +49,8 @@ std::filesystem::path create_AI(std::filesystem::directory_entry location,
                .c_str());
      }
      //make
-     //move to 
-     return source_directory;
+     std::system(
+          ("cd " + fs::canonical(fs::path(location)).string()
+          + " && make >> build_log").c_str()
+     );
 }

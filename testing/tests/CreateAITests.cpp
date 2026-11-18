@@ -59,3 +59,26 @@ TEST(CreateAITest, applies_changes) {
           }          
      }
 }
+
+TEST(CreateAITest, simulate_game_lobotomized_AI_should_lose) {
+     auto normal_AI_dir = create_uncontested_tmp_dir();
+     auto dumb_AI_dir = create_uncontested_tmp_dir();
+
+     fs::path normal_config_path = normal_AI_dir.path() / "config.txt";
+     std::ofstream normal_config_file{normal_config_path};
+     normal_config_file.close();
+
+     fs::path dumb_config_path = dumb_AI_dir.path() / "config.txt";
+     std::ofstream dumb_config_file{dumb_config_path};
+     dumb_config_file << "SIMULATIONS 10\n";
+     dumb_config_file.close();
+
+     create_AI(normal_AI_dir, "normal_AI", normal_config_path);
+     create_AI(dumb_AI_dir, "dumb_AI", dumb_config_path);
+     
+     bool NormalAIWins = simulate_game(normal_AI_dir.path() / "main.cpp", 
+          dumb_AI_dir.path() / "main.cpp");
+
+
+     EXPECT_TRUE(NormalAIWins);
+}
