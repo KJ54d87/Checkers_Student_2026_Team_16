@@ -18,15 +18,20 @@
         })
           {
             packages = with pkgs; [
+              stable.cmake
               gdb
               gnumake
-              gtest
+              stable.gtest
               valgrind
               stable.readline
               stable.ncurses
               clang-tools
               criterion
               pkg-config
+
+              stable.python310
+              stable.python310Packages.numpy
+              zip
             ];
 
             buildInputs = [
