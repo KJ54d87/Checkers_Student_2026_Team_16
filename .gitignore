@@ -17,3 +17,8 @@ cmake-build-*/
 *.swp
 *.swo
 *~
+.envrc
+.clang-format
+
+# submission zip files
+Tools/*.zip
